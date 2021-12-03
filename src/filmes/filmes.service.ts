@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFilmeDto } from './dto/create-filme.dto';
-import { UpdateFilmeDto } from './dto/update-filme.dto';
+
+import { PrismaService } from 'src/prisma.service';
+import { Filme, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FilmesService {
-  create(createFilmeDto: CreateFilmeDto) {
-    return 'This action adds a new filme';
+  constructor(private prisma: PrismaService) {}
+
+  async filme(
+    filmeWhereUniqueInput: Prisma.FilmeWhereUniqueInput,
+  ): Promise<Filme | null> {
+    return this.prisma.filme.findUnique({
+      where: filmeWhereUniqueInput,
+    });
   }
 
-  findAll() {
-    return `This action returns all filmes`;
+  async filmes(): Promise<Filme[]> {
+    return this.prisma.filme.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} filme`;
+  async updateFilme(params: {
+    where: Prisma.FilmeWhereUniqueInput;
+    data: Prisma.FilmeUpdateInput;
+  }): Promise<Filme> {
+    const { where, data } = params;
+    return this.prisma.filme.update({
+      data,
+      where,
+    });
   }
 
-  update(id: number, updateFilmeDto: UpdateFilmeDto) {
-    return `This action updates a #${id} filme`;
+  async createFilme(data: Prisma.FilmeCreateInput): Promise<Filme> {
+    return this.prisma.filme.create({ data });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} filme`;
+  async deleteFilme(where: Prisma.FilmeWhereUniqueInput): Promise<Filme> {
+    return this.prisma.filme.delete({ where });
   }
 }

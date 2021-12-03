@@ -9,3 +9,10 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Filme {
+  id     Int    @id @default(autoincrement())
+  nome   String @unique
+  ano    Int
+  genero String
+}
